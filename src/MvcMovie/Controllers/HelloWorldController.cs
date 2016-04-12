@@ -8,17 +8,37 @@ namespace MvcMovie.Controllers
         // 
         // GET: /HelloWorld/ 
 
-        public string Index()
+        public IActionResult Index()
         {
-            return "This is my default action...";
+            return View();
         }
 
         // 
         // GET: /HelloWorld/Welcome/ 
 
-        public string Welcome()
+        //public string Welcome()
+        //{
+        //    return "This is the Welcome action method...";
+        //}
+
+        //public string Welcome(string name, int numTimes = 1)
+        //{
+        //    return HtmlEncoder.Default.HtmlEncode(
+        //        "Hello " + name + ", NumTimes is: " + numTimes);
+        //}
+
+        //public string Welcome(string name, int ID = 1)
+        //{
+        //    return HtmlEncoder.Default.HtmlEncode(
+        //        "Hello " + name + ", ID: " + ID);
+        //}
+
+        public IActionResult Welcome(string name, int numTimes = 1)
         {
-            return "This is the Welcome action method...";
+            ViewData["Message"] = "Hello " + name;
+            ViewData["NumTimes"] = numTimes;
+
+            return View();
         }
     }
 }

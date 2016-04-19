@@ -3,6 +3,9 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
 using MvcMovie.Models;
+using System;
+using Microsoft.AspNet.Http.Internal;
+using System.Collections.Generic;
 
 namespace MvcMovie.Controllers
 {
@@ -15,11 +18,37 @@ namespace MvcMovie.Controllers
             _context = context;    
         }
 
-        // GET: Movies
-        public IActionResult Index()
+        public IActionResult Index(string movieGenre, string searchString)
         {
-            return View(_context.Movie.ToList());
+            var GenreQry = from m in _context.Movie
+                           orderby m.Genre
+                           select m.Genre;
+
+            var GenreList = new List<string>();
+            GenreList.AddRange(GenreQry.Distinct());
+            ViewData["movieGenre"] = new SelectList(GenreList);
+
+            var movies = from m in _context.Movie
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                movies = movies.Where(s => s.Title.Contains(searchString));
+            }
+
+            if (!string.IsNullOrEmpty(movieGenre))
+            {
+                movies = movies.Where(x => x.Genre == movieGenre);
+            }
+
+            return View(movies);
         }
+
+        //[HttpPost]
+        //public string Index(FormCollection fc, string searchString)
+        //{
+        //    return "From [HttpPost]Index: filter on " + searchString;
+        //}
 
         // GET: Movies/Details/5
         public IActionResult Details(int? id)
